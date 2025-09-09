@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>PNG 50th Independence Celebration</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
@@ -31,7 +31,7 @@
       src="PNG Flag.mp4" autoplay loop muted playsinline></video>
 
     <!-- Text Container -->
-    <div id="celebration" class="flex-1 text-center bg-white/10 p-4 rounded-2xl shadow-lg max-w-lg order-2 lg:order-2">
+    <div id="celebration" class="flex-1 text-center bg-white/10 p-4 rounded-2xl shadow-lg max-w-lg order-2 lg:order-2 relative">
       <!-- Default (before submit) -->
       <div id="formSection">
         <h1 class="text-lg sm:text-xl md:text-2xl font-bold mb-2">🎉 A Independence Celebration Gift from Jessy APENDA 🎉</h1>
@@ -42,7 +42,7 @@
         <button id="celebrateBtn" class="px-4 py-2 rounded-xl bg-yellow-400 text-black font-bold">Celebrate 🎊</button>
       </div>
       <!-- After submit (celebration message goes here) -->
-      <div id="greetingSection" class="hidden"></div>
+      <div id="greetingSection" class="hidden bg-black/30 p-4 rounded-xl mt-2"></div>
     </div>
 
     <!-- Bird of Paradise Video Bottom (mobile) / Right (desktop) -->
@@ -75,6 +75,14 @@
     }
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
+
+    // Prevent viewport scroll on mobile when input is focused
+    usernameInput.addEventListener('focus', () => {
+      document.body.style.position = 'fixed';
+    });
+    usernameInput.addEventListener('blur', () => {
+      document.body.style.position = 'relative';
+    });
 
     const targetDate = new Date("2025-09-16T00:00:00").getTime();
 

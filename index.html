@@ -6,6 +6,24 @@
   <title>PNG 50th Independence Celebration</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+  <style>
+    /* Balloon & Ribbon Styles */
+    .balloon, .ribbon {
+      position: absolute;
+      font-size: 1.5rem;
+      pointer-events: none;
+      z-index: 5;
+      opacity: 0.9;
+      animation: fall linear forwards;
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(120vh);
+        opacity: 0;
+      }
+    }
+  </style>
 </head>
 <body class="flex items-center justify-center min-h-screen m-0 font-sans text-white relative overflow-x-hidden bg-gradient-to-b from-green-600 via-yellow-400 to-black">
 
@@ -26,7 +44,7 @@
   <!-- Celebration Container -->
   <div class="flex flex-col lg:flex-row items-center justify-center z-10 max-w-full p-2 space-y-4 lg:space-y-0 lg:space-x-6">
 
-    <!-- Flag Video Left -->
+    <!-- Flag Video Top on mobile / Left on desktop -->
     <video class="w-48 sm:w-56 md:w-64 lg:w-72 xl:w-80 rounded-lg shadow-lg opacity-90 animate-pulse order-2 lg:order-1"
       src="PNG Flag.mp4" autoplay loop muted playsinline></video>
 
@@ -45,7 +63,7 @@
       <div id="greetingSection" class="hidden"></div>
     </div>
 
-    <!-- Bird of Paradise Video Right -->
+    <!-- Bird of Paradise Bottom on mobile / Right on desktop -->
     <video class="w-48 sm:w-56 md:w-64 lg:w-72 xl:w-80 rounded-lg shadow-lg opacity-90 animate-pulse order-3"
       src="Bird of Paradise.mp4" autoplay loop muted playsinline></video>
   </div>
@@ -65,6 +83,9 @@
     const canvas = document.getElementById("fireworksCanvas");
 
     let anthemMuted = false;
+    const balloons = [];
+    const balloonEmojis = ["🎈","🎉","🎀","⭐","✨"];
+    const maxBalloons = 10; // max balloons on screen at once
 
     function resizeCanvas() {
       canvas.width = window.innerWidth;
@@ -106,6 +127,7 @@
       if(!anthemMuted) anthem.play();
       startFireworks();
       showGreeting();
+      spawnBalloons();
     }
 
     function showGreeting() {
@@ -116,6 +138,25 @@
         <h2 class="text-lg sm:text-xl font-bold">Hi ${name}, 🎈 Congratulations and Happy 50th Independence to You! 🎉</h2>
         <p class="text-sm sm:text-base mt-2">As you celebrate this remarkable golden jubilee, may the vibrant spirit of unity, the richness of your diverse cultures, and the precious gift of freedom continue to be the cornerstones of this nation.<br><br>God bless Papua New Guinea!</p>
       `;
+    }
+
+    function spawnBalloons() {
+      setInterval(() => {
+        if (balloons.length >= maxBalloons) return;
+        const balloon = document.createElement("div");
+        balloon.className = "balloon";
+        balloon.innerHTML = balloonEmojis[Math.floor(Math.random()*balloonEmojis.length)];
+        balloon.style.left = Math.random() * window.innerWidth + "px";
+        balloon.style.animationDuration = (5 + Math.random()*5) + "s";
+        document.body.appendChild(balloon);
+        balloons.push(balloon);
+
+        // Remove balloon after animation
+        setTimeout(() => {
+          balloon.remove();
+          balloons.shift();
+        }, 10000);
+      }, 800);
     }
 
     muteBtn.addEventListener("click", () => {

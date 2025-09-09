@@ -6,24 +6,6 @@
   <title>PNG 50th Independence Celebration</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
-  <style>
-    /* Balloon & Ribbon Styles */
-    .balloon, .ribbon {
-      position: absolute;
-      font-size: 1.5rem;
-      pointer-events: none;
-      z-index: 5;
-      opacity: 0.9;
-      animation: fall linear forwards;
-    }
-
-    @keyframes fall {
-      to {
-        transform: translateY(120vh);
-        opacity: 0;
-      }
-    }
-  </style>
 </head>
 <body class="flex items-center justify-center min-h-screen m-0 font-sans text-white relative overflow-x-hidden bg-gradient-to-b from-green-600 via-yellow-400 to-black">
 
@@ -44,12 +26,12 @@
   <!-- Celebration Container -->
   <div class="flex flex-col lg:flex-row items-center justify-center z-10 max-w-full p-2 space-y-4 lg:space-y-0 lg:space-x-6">
 
-    <!-- Flag Video Top on mobile / Left on desktop -->
-    <video class="w-48 sm:w-56 md:w-64 lg:w-72 xl:w-80 rounded-lg shadow-lg opacity-90 animate-pulse order-2 lg:order-1"
+    <!-- Flag Video Top (mobile) / Left (desktop) -->
+    <video class="w-48 sm:w-56 md:w-64 lg:w-72 xl:w-80 rounded-lg shadow-lg opacity-90 animate-pulse order-1 lg:order-1"
       src="PNG Flag.mp4" autoplay loop muted playsinline></video>
 
     <!-- Text Container -->
-    <div id="celebration" class="flex-1 text-center bg-white/10 p-4 rounded-2xl shadow-lg max-w-lg order-1 lg:order-2">
+    <div id="celebration" class="flex-1 text-center bg-white/10 p-4 rounded-2xl shadow-lg max-w-lg order-2 lg:order-2">
       <!-- Default (before submit) -->
       <div id="formSection">
         <h1 class="text-lg sm:text-xl md:text-2xl font-bold mb-2">🎉 A Independence Celebration Gift from Jessy APENDA 🎉</h1>
@@ -63,8 +45,8 @@
       <div id="greetingSection" class="hidden"></div>
     </div>
 
-    <!-- Bird of Paradise Bottom on mobile / Right on desktop -->
-    <video class="w-48 sm:w-56 md:w-64 lg:w-72 xl:w-80 rounded-lg shadow-lg opacity-90 animate-pulse order-3"
+    <!-- Bird of Paradise Video Bottom (mobile) / Right (desktop) -->
+    <video class="w-48 sm:w-56 md:w-64 lg:w-72 xl:w-80 rounded-lg shadow-lg opacity-90 animate-pulse order-3 lg:order-3"
       src="Bird of Paradise.mp4" autoplay loop muted playsinline></video>
   </div>
 
@@ -84,8 +66,8 @@
 
     let anthemMuted = false;
     const balloons = [];
-    const balloonEmojis = ["🎈","🎉","🎀","⭐","✨"];
-    const maxBalloons = 10; // max balloons on screen at once
+    const balloonEmojis = ["🎈","🟢","🔵","🟡","⭐","✨"];
+    const ribbonEmojis = ["🎀","🎗️","🎉"];
 
     function resizeCanvas() {
       canvas.width = window.innerWidth;
@@ -113,14 +95,62 @@
     }
 
     function startFireworks() {
-      const duration = 15 * 1000;
+      const duration = 10 * 1000;
       const end = Date.now() + duration;
-      const particleCount = window.innerWidth < 600 ? 5 : 10;
+      const particleCount = window.innerWidth < 600 ? 3 : 6; // subtle confetti
+
       (function frame() {
-        confetti({particleCount, angle:60, spread:55, origin:{x:0}});
-        confetti({particleCount, angle:120, spread:55, origin:{x:1}});
+        confetti({particleCount, angle:60, spread:40, origin:{x:0.25, y:0.3}});
+        confetti({particleCount, angle:120, spread:40, origin:{x:0.75, y:0.3}});
         if (Date.now() < end) requestAnimationFrame(frame);
       })();
+    }
+
+    function spawnBalloons() {
+      setInterval(() => {
+        if(balloons.length > 12) return; // reduce balloon number
+
+        // Balloon
+        const balloon = document.createElement("div");
+        balloon.className = "absolute text-2xl z-10";
+        balloon.innerHTML = balloonEmojis[Math.floor(Math.random()*balloonEmojis.length)];
+        balloon.style.left = Math.random() * window.innerWidth + "px";
+        balloon.style.top = "-40px";
+        balloon.style.transition = "top 7s linear, opacity 7s linear";
+        document.body.appendChild(balloon);
+        balloons.push(balloon);
+
+        setTimeout(() => {
+          balloon.style.top = window.innerHeight + "px";
+          balloon.style.opacity = "0";
+        }, 50);
+
+        setTimeout(() => {
+          balloon.remove();
+          balloons.shift();
+        }, 7500);
+
+        // Ribbon
+        const ribbon = document.createElement("div");
+        ribbon.className = "absolute text-xl z-10";
+        ribbon.innerHTML = ribbonEmojis[Math.floor(Math.random()*ribbonEmojis.length)];
+        ribbon.style.left = Math.random() * window.innerWidth + "px";
+        ribbon.style.top = "-40px";
+        ribbon.style.transition = "top 7s linear, opacity 7s linear";
+        document.body.appendChild(ribbon);
+        balloons.push(ribbon);
+
+        setTimeout(() => {
+          ribbon.style.top = window.innerHeight + "px";
+          ribbon.style.opacity = "0";
+        }, 50);
+
+        setTimeout(() => {
+          ribbon.remove();
+          balloons.shift();
+        }, 7500);
+
+      }, 1000);
     }
 
     function startCelebration() {
@@ -138,25 +168,6 @@
         <h2 class="text-lg sm:text-xl font-bold">Hi ${name}, 🎈 Congratulations and Happy 50th Independence to You! 🎉</h2>
         <p class="text-sm sm:text-base mt-2">As you celebrate this remarkable golden jubilee, may the vibrant spirit of unity, the richness of your diverse cultures, and the precious gift of freedom continue to be the cornerstones of this nation.<br><br>God bless Papua New Guinea!</p>
       `;
-    }
-
-    function spawnBalloons() {
-      setInterval(() => {
-        if (balloons.length >= maxBalloons) return;
-        const balloon = document.createElement("div");
-        balloon.className = "balloon";
-        balloon.innerHTML = balloonEmojis[Math.floor(Math.random()*balloonEmojis.length)];
-        balloon.style.left = Math.random() * window.innerWidth + "px";
-        balloon.style.animationDuration = (5 + Math.random()*5) + "s";
-        document.body.appendChild(balloon);
-        balloons.push(balloon);
-
-        // Remove balloon after animation
-        setTimeout(() => {
-          balloon.remove();
-          balloons.shift();
-        }, 10000);
-      }, 800);
     }
 
     muteBtn.addEventListener("click", () => {

@@ -77,7 +77,7 @@
     resizeCanvas();
 
     // Prevent viewport scroll on mobile when input is focused
-    usernameInput.addEventListener('focus', () => {
+    usernameInput.addEventListener('blur', () => {
       document.body.style.position = 'fixed';
     });
     usernameInput.addEventListener('blur', () => {
